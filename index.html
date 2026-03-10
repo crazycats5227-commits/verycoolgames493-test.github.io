@@ -12,7 +12,7 @@
   nav {
     background: #160025; padding: 14px 28px;
     display: flex; align-items: center; gap: 12px;
-    border-bottom: 2px solid #6a00cc; position: sticky; top: 0; z-index: 10;
+    border-bottom: 2px solid #6a00cc; position: sticky; top: 0; z-index: 100;
   }
   .logo { font-size: 1.1rem; font-weight: 700; color: #bf4dff; margin-right: auto; cursor: pointer; }
   .tab {
@@ -44,11 +44,13 @@
   .card:hover { transform: translateY(-4px); border-color: #bf4dff; }
   .card-fav {
     position: absolute; top: 6px; right: 6px; z-index: 2;
-    background: #0d001599; border: none; font-size: 1rem; cursor: pointer;
-    border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
-    transition: transform 0.15s;
+    background: #1a003acc; border: 1.5px solid #9b00ff99; font-size: 1.1rem; cursor: pointer;
+    border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+    transition: transform 0.15s, background 0.15s, border-color 0.15s;
+    color: #ffdd00; text-shadow: 0 0 8px #ffdd00cc, 0 0 16px #ffaa0088;
+    filter: drop-shadow(0 0 4px #ffdd0088);
   }
-  .card-fav:hover { transform: scale(1.2); }
+  .card-fav:hover { transform: scale(1.25); background: #3a006acc; border-color: #bf4dff; }
 
   .card-thumb {
     width: 100%; aspect-ratio: 16/9; background: #2a0050;
@@ -71,7 +73,7 @@
   .recent-chip:hover { background: #6a00cc; color: #fff; }
 
   /* Frame */
-  #frame-wrap { display: none; flex-direction: column; height: calc(100vh - 58px); }
+  #frame-wrap { display: none; flex-direction: column; height: calc(100vh - 58px); position: relative; z-index: 1; }
   #frame-wrap.active { display: flex; }
   .frame-bar {
     background: #160025; padding: 8px 16px;
@@ -140,7 +142,7 @@
 </div>
 
 <div class="page" id="page-favs">
-  <h2>Favorites</h2>
+  <h2>⭐ Favorites</h2>
   <div class="grid" id="favs-grid"></div>
   <div class="empty" id="favs-empty" style="display:none">No favorites yet. Hit ⭐ on any game to add it!</div>
 </div>
@@ -165,95 +167,95 @@
 </div>
 
 <script>
-const SITE = "https://394gamescoolvery.netlify.app";
+// icon fields removed — probeIcon() auto-detects them now
 
 const games = [
-  { name: "1v1.LOL",               folder: "1v1lol",                 icon: "icon.png",  emoji: "🔫", cat: "Battle",     featured: true  },
-  { name: "1v1 Space",             folder: "1v1space",               icon: null,        emoji: "🚀", cat: "Battle",     featured: false },
-  { name: "2020 Game",             folder: "2020-game",              icon: null,        emoji: "🗓️", cat: "Puzzle",     featured: false },
-  { name: "2048",                  folder: "2048",                   icon: "icon.png",  emoji: "🔢", cat: "Puzzle",     featured: true  },
-  { name: "2048 Multitask",        folder: "2048-multitask",         icon: null,        emoji: "🔢", cat: "Puzzle",     featured: false },
-  { name: "8 Ball Billiards",      folder: "8ball-billards-classic", icon: "icon.png",  emoji: "🎱", cat: "Sports",     featured: false },
-  { name: "9007199254740992",      folder: "9007199254740992",       icon: null,        emoji: "♾️", cat: "Puzzle",     featured: false },
-  { name: "10 Min Till Dawn",      folder: "10-minutes-till-dawn",   icon: "icon.png",  emoji: "🌙", cat: "Shooter",    featured: false },
-  { name: "100ng",                 folder: "100ng",                  icon: null,        emoji: "💯", cat: "Arcade",     featured: false },
-  { name: "A Dark Room",           folder: "adarkroom",              icon: null,        emoji: "🕯️", cat: "RPG",        featured: false },
-  { name: "Achievement Unlocked",  folder: "achievementunlocked",    icon: "icon.png",  emoji: "🏆", cat: "Arcade",     featured: false },
-  { name: "Adrenaline Challenge",  folder: "adrenalinechallenge",    icon: null,        emoji: "⚡", cat: "Racing",     featured: false },
-  { name: "Age of War",            folder: "age-of-war",             icon: "icon.png",  emoji: "⚔️", cat: "Strategy",   featured: false },
-  { name: "Alien Hominid",         folder: "alienhominid",           icon: "icon.png",  emoji: "👽", cat: "Action",     featured: false },
-  { name: "Alien Invaders IO",     folder: "alien-invaders-io",      icon: null,        emoji: "🛸", cat: "Shooter",    featured: false },
-  { name: "Align 4",               folder: "align-4",                icon: null,        emoji: "🟡", cat: "Board",      featured: false },
-  { name: "Among Us",              folder: "among-us",               icon: "icon.png",  emoji: "🚀", cat: "Strategy",   featured: true  },
-  { name: "Angry Birds",           folder: "angry-birds",            icon: "icon.png",  emoji: "🐦", cat: "Physics",    featured: false },
-  { name: "Anti Terrorist Rush",   folder: "anti-terrorist-rush",    icon: "icon.png",  emoji: "💣", cat: "Shooter",    featured: false },
-  { name: "Arcade Wizard",         folder: "arcade-wizard",          icon: null,        emoji: "🧙", cat: "Arcade",     featured: false },
-  { name: "ASCII Space",           folder: "asciispace",             icon: null,        emoji: "🌌", cat: "Shooter",    featured: false },
-  { name: "Aspiring Artist",       folder: "aspiring-artist",        icon: null,        emoji: "🎨", cat: "Casual",     featured: false },
-  { name: "Asteroids",             folder: "asteroids",              icon: null,        emoji: "☄️", cat: "Arcade",     featured: false },
-  { name: "Astray",                folder: "astray",                 icon: "icon.png",  emoji: "🌀", cat: "Puzzle",     featured: false },
-  { name: "Avalanche",             folder: "avalanche",              icon: null,        emoji: "🏔️", cat: "Arcade",     featured: false },
-  { name: "Awesome Tanks 2",       folder: "awesome-tanks-2",        icon: "icon.png",  emoji: "🪖", cat: "Shooter",    featured: false },
-  { name: "Backcountry",           folder: "backcountry",            icon: null,        emoji: "🏕️", cat: "Adventure",  featured: false },
-  { name: "Backflip Dive 3D",      folder: "backflip-dive-3d",       icon: "icon.png",  emoji: "🤸", cat: "Sports",     featured: false },
-  { name: "Backrooms",             folder: "backrooms",              icon: null,        emoji: "🏚️", cat: "Horror",     featured: false },
-  { name: "Bad Ice Cream",         folder: "bad-ice-cream",          icon: "icon.png",  emoji: "🍦", cat: "Action",     featured: false },
-  { name: "Bad Ice Cream 2",       folder: "bad-ice-cream-2",        icon: "icon.png",  emoji: "🍧", cat: "Action",     featured: false },
-  { name: "Bad Ice Cream 3",       folder: "bad-ice-cream-3",        icon: "icon.png",  emoji: "🍨", cat: "Action",     featured: false },
-  { name: "Baldi's Basics",        folder: "baldis-basics",          icon: "icon.png",  emoji: "📏", cat: "Horror",     featured: false },
-  { name: "Basket Bros IO",        folder: "basket-bros-io",         icon: "icon.png",  emoji: "🏀", cat: "Sports",     featured: false },
-  { name: "Basketball IO",         folder: "basketball-io",          icon: null,        emoji: "🏀", cat: "Sports",     featured: false },
-  { name: "Basketball Legends",    folder: "basketball-legends-2020",icon: "icon.png",  emoji: "🏀", cat: "Sports",     featured: false },
-  { name: "Basketball Stars",      folder: "basketball-stars",       icon: "icon.png",  emoji: "⭐", cat: "Sports",     featured: false },
-  { name: "Battle for Gondor",     folder: "battleforgondor",        icon: null,        emoji: "🏰", cat: "Strategy",   featured: false },
-  { name: "Big Red Button",        folder: "bigredbutton",           icon: null,        emoji: "🔴", cat: "Casual",     featured: false },
-  { name: "Binding of Isaac",      folder: "binding-of-isaac",       icon: "icon.png",  emoji: "👁️", cat: "Roguelite",  featured: false },
-  { name: "BitLife",               folder: "bitlife",                icon: "icon.png",  emoji: "👤", cat: "Sim",        featured: false },
-  { name: "Black Hole Square",     folder: "blackholesquare",        icon: null,        emoji: "⬛", cat: "Puzzle",     featured: false },
-  { name: "Black Knight",          folder: "blackknight",            icon: null,        emoji: "🗡️", cat: "Action",     featured: false },
-  { name: "Blocky Snakes",         folder: "blocky-snakes",          icon: "icon.png",  emoji: "🐍", cat: "Arcade",     featured: false },
-  { name: "Bloons TD",             folder: "bloonstd",               icon: "icon.png",  emoji: "🎈", cat: "Tower Def",  featured: true  },
-  { name: "Bloons TD 2",           folder: "bloonstd2",              icon: "icon.png",  emoji: "🎈", cat: "Tower Def",  featured: false },
-  { name: "Bloxors",               folder: "bloxors",                icon: null,        emoji: "📦", cat: "Puzzle",     featured: false },
-  { name: "Bounceback",            folder: "bounceback",             icon: null,        emoji: "🏓", cat: "Arcade",     featured: false },
-  { name: "Boxel Rebound",         folder: "boxel-rebound",          icon: "icon.png",  emoji: "📦", cat: "Platformer", featured: false },
-  { name: "Boxhead 2 Play",        folder: "boxhead2play",           icon: "icon.png",  emoji: "🧟", cat: "Shooter",    featured: false },
-  { name: "Brave Explorers",       folder: "brave-explorers",        icon: null,        emoji: "🗺️", cat: "Adventure",  featured: false },
-  { name: "Breaking the Bank",     folder: "breakingthebank",        icon: null,        emoji: "🏦", cat: "Action",     featured: false },
-  { name: "Breaklock",             folder: "breaklock",              icon: null,        emoji: "🔒", cat: "Puzzle",     featured: false },
-  { name: "Breakout",              folder: "breakout",               icon: null,        emoji: "🧱", cat: "Classic",    featured: false },
-  { name: "BTD 4",                 folder: "btd4",                   icon: "icon.png",  emoji: "🎈", cat: "Tower Def",  featured: false },
-  { name: "Burning Man 2",         folder: "burning-man-2",          icon: null,        emoji: "🔥", cat: "Action",     featured: false },
-  { name: "Cannon Basketball 4",   folder: "cannon-basketball-4",    icon: "icon.png",  emoji: "🏀", cat: "Physics",    featured: false },
-  { name: "Canyon Defense",        folder: "canyondefense",          icon: null,        emoji: "🏜️", cat: "Tower Def",  featured: false },
-  { name: "Captain Callisto",      folder: "captaincallisto",        icon: null,        emoji: "👨‍🚀", cat: "Adventure",  featured: false },
-  { name: "Cars Simulator",        folder: "cars-simulator",         icon: "icon.png",  emoji: "🚗", cat: "Racing",     featured: false },
-  { name: "Cell Machine",          folder: "cell-machine",           icon: "icon.png",  emoji: "🧬", cat: "Puzzle",     featured: false },
-  { name: "Champion Archer",       folder: "championarcher",         icon: null,        emoji: "🏹", cat: "Sports",     featured: false },
-  { name: "Chess",                 folder: "chess",                  icon: "icon.png",  emoji: "♟️", cat: "Board",      featured: false },
-  { name: "Chrome Dino",           folder: "chromedino",             icon: "icon.png",  emoji: "🦕", cat: "Arcade",     featured: true  },
-  { name: "Cluster Rush",          folder: "cluster-rush",           icon: "icon.png",  emoji: "🚛", cat: "Arcade",     featured: true  },
-  { name: "Cookie Clicker",        folder: "cookieclicker",          icon: "icon.png",  emoji: "🍪", cat: "Idle",       featured: true  },
-  { name: "Core Ball",             folder: "core-ball",              icon: "icon.png",  emoji: "⚽", cat: "Arcade",     featured: false },
-  { name: "Craftmine",             folder: "craftmine",              icon: "icon.png",  emoji: "⛏️", cat: "Sandbox",    featured: false },
-  { name: "Crossy Road",           folder: "crossyroad",             icon: "icon.png",  emoji: "🐔", cat: "Arcade",     featured: false },
-  { name: "Crowd City 2",          folder: "crowd city 2",           icon: "icon.png",  emoji: "👥", cat: "IO",         featured: false },
-  { name: "CS:GO Clicker",         folder: "csgo-clicker",           icon: "icon.png",  emoji: "🔫", cat: "Idle",       featured: false },
-  { name: "CTR",                   folder: "ctr",                    icon: "icon.png",  emoji: "🏎️", cat: "Racing",     featured: false },
-  { name: "Cubefield",             folder: "cubefield",              icon: null,        emoji: "🟦", cat: "Arcade",     featured: false },
-  { name: "Cut the Rope",          folder: "cuttherope",             icon: "icon.png",  emoji: "🍬", cat: "Puzzle",     featured: false },
-  { name: "Cut the Rope 2",        folder: "cuttherope2",            icon: "icon.png",  emoji: "🍭", cat: "Puzzle",     featured: false },
-  { name: "Dadish",                folder: "dadish",                 icon: "icon.png",  emoji: "🌱", cat: "Platformer", featured: false },
-  { name: "Dadish 2",              folder: "dadishtwo",              icon: "icon.png",  emoji: "🌿", cat: "Platformer", featured: false },
-  { name: "Dadish 3",              folder: "dadish3",                icon: "icon.png",  emoji: "🌳", cat: "Platformer", featured: false },
-  { name: "Doge Miner",            folder: "DogeMiner",              icon: "icon.png",  emoji: "🐕", cat: "Idle",       featured: false },
-  { name: "Drift Boss",            folder: "drift-boss",             icon: "icon.png",  emoji: "🚗", cat: "Racing",     featured: false },
-  { name: "FullScreen Mario",      folder: "FullScreenMario/Source", icon: null,        emoji: "🍄", cat: "Platformer", featured: false },
-  { name: "HexGL",                 folder: "HexGL",                  icon: "icon.png",  emoji: "🏎️", cat: "Racing",     featured: false },
-  { name: "Offline Paradise",      folder: "OfflineParadise",        icon: null,        emoji: "🏝️", cat: "Idle",       featured: false },
-  { name: "Slope",                 folder: "slope",                  icon: "icon.png",  emoji: "🟢", cat: "Arcade",     featured: true  },
-  { name: "Squid Gun Fest",        folder: "Squid Gun Fest",         icon: "icon.png",  emoji: "🦑", cat: "Shooter",    featured: false },
-  { name: "Stickman Survival",     folder: "Stickman-Survival",      icon: "icon.png",  emoji: "🧍", cat: "Survival",   featured: false },
+  { name: "1v1.LOL",               folder: "1v1lol",                 emoji: "🔫", cat: "Battle",     featured: true  },
+  { name: "1v1 Space",             folder: "1v1space",               emoji: "🚀", cat: "Battle",     featured: false },
+  { name: "2020 Game",             folder: "2020-game",              emoji: "🗓️", cat: "Puzzle",     featured: false },
+  { name: "2048",                  folder: "2048",                   emoji: "🔢", cat: "Puzzle",     featured: true  },
+  { name: "2048 Multitask",        folder: "2048-multitask",         emoji: "🔢", cat: "Puzzle",     featured: false },
+  { name: "8 Ball Billiards",      folder: "8ball-billards-classic", emoji: "🎱", cat: "Sports",     featured: false },
+  { name: "9007199254740992",      folder: "9007199254740992",       emoji: "♾️", cat: "Puzzle",     featured: false },
+  { name: "10 Min Till Dawn",      folder: "10-minutes-till-dawn",   emoji: "🌙", cat: "Shooter",    featured: false },
+  { name: "100ng",                 folder: "100ng",                  emoji: "💯", cat: "Arcade",     featured: false },
+  { name: "A Dark Room",           folder: "adarkroom",              emoji: "🕯️", cat: "RPG",        featured: false },
+  { name: "Achievement Unlocked",  folder: "achievementunlocked",    emoji: "🏆", cat: "Arcade",     featured: false },
+  { name: "Adrenaline Challenge",  folder: "adrenalinechallenge",    emoji: "⚡", cat: "Racing",     featured: false },
+  { name: "Age of War",            folder: "age-of-war",             emoji: "⚔️", cat: "Strategy",   featured: false },
+  { name: "Alien Hominid",         folder: "alienhominid",           emoji: "👽", cat: "Action",     featured: false },
+  { name: "Alien Invaders IO",     folder: "alien-invaders-io",      emoji: "🛸", cat: "Shooter",    featured: false },
+  { name: "Align 4",               folder: "align-4",                emoji: "🟡", cat: "Board",      featured: false },
+  { name: "Among Us",              folder: "among-us",               emoji: "🚀", cat: "Strategy",   featured: true  },
+  { name: "Angry Birds",           folder: "angry-birds",            emoji: "🐦", cat: "Physics",    featured: false },
+  { name: "Anti Terrorist Rush",   folder: "anti-terrorist-rush",    emoji: "💣", cat: "Shooter",    featured: false },
+  { name: "Arcade Wizard",         folder: "arcade-wizard",          emoji: "🧙", cat: "Arcade",     featured: false },
+  { name: "ASCII Space",           folder: "asciispace",             emoji: "🌌", cat: "Shooter",    featured: false },
+  { name: "Aspiring Artist",       folder: "aspiring-artist",        emoji: "🎨", cat: "Casual",     featured: false },
+  { name: "Asteroids",             folder: "asteroids",              emoji: "☄️", cat: "Arcade",     featured: false },
+  { name: "Astray",                folder: "astray",                 emoji: "🌀", cat: "Puzzle",     featured: false },
+  { name: "Avalanche",             folder: "avalanche",              emoji: "🏔️", cat: "Arcade",     featured: false },
+  { name: "Awesome Tanks 2",       folder: "awesome-tanks-2",        emoji: "🪖", cat: "Shooter",    featured: false },
+  { name: "Backcountry",           folder: "backcountry",            emoji: "🏕️", cat: "Adventure",  featured: false },
+  { name: "Backflip Dive 3D",      folder: "backflip-dive-3d",       emoji: "🤸", cat: "Sports",     featured: false },
+  { name: "Backrooms",             folder: "backrooms",              emoji: "🏚️", cat: "Horror",     featured: false },
+  { name: "Bad Ice Cream",         folder: "bad-ice-cream",          emoji: "🍦", cat: "Action",     featured: true  },
+  { name: "Bad Ice Cream 2",       folder: "bad-ice-cream-2",        emoji: "🍧", cat: "Action",     featured: false },
+  { name: "Bad Ice Cream 3",       folder: "bad-ice-cream-3",        emoji: "🍨", cat: "Action",     featured: false },
+  { name: "Baldi's Basics",        folder: "baldis-basics",          emoji: "📏", cat: "Horror",     featured: false },
+  { name: "Basket Bros IO",        folder: "basket-bros-io",         emoji: "🏀", cat: "Sports",     featured: false },
+  { name: "Basketball IO",         folder: "basketball-io",          emoji: "🏀", cat: "Sports",     featured: false },
+  { name: "Basketball Legends",    folder: "basketball-legends-2020",emoji: "🏀", cat: "Sports",     featured: false },
+  { name: "Basketball Stars",      folder: "basketball-stars",       emoji: "⭐", cat: "Sports",     featured: false },
+  { name: "Battle for Gondor",     folder: "battleforgondor",        emoji: "🏰", cat: "Strategy",   featured: false },
+  { name: "Big Red Button",        folder: "bigredbutton",           emoji: "🔴", cat: "Casual",     featured: false },
+  { name: "Binding of Isaac",      folder: "binding-of-isaac",       emoji: "👁️", cat: "Roguelite",  featured: true  },
+  { name: "BitLife",               folder: "bitlife",                emoji: "👤", cat: "Sim",        featured: true  },
+  { name: "Black Hole Square",     folder: "blackholesquare",        emoji: "⬛", cat: "Puzzle",     featured: false },
+  { name: "Black Knight",          folder: "blackknight",            emoji: "🗡️", cat: "Action",     featured: false },
+  { name: "Blocky Snakes",         folder: "blocky-snakes",          emoji: "🐍", cat: "Arcade",     featured: false },
+  { name: "Bloons TD",             folder: "bloonstd",               emoji: "🎈", cat: "Tower Def",  featured: true  },
+  { name: "Bloons TD 2",           folder: "bloonstd2",              emoji: "🎈", cat: "Tower Def",  featured: false },
+  { name: "Bloxors",               folder: "bloxors",                emoji: "📦", cat: "Puzzle",     featured: false },
+  { name: "Bounceback",            folder: "bounceback",             emoji: "🏓", cat: "Arcade",     featured: false },
+  { name: "Boxel Rebound",         folder: "boxel-rebound",          emoji: "📦", cat: "Platformer", featured: false },
+  { name: "Boxhead 2 Play",        folder: "boxhead2play",           emoji: "🧟", cat: "Shooter",    featured: false },
+  { name: "Brave Explorers",       folder: "brave-explorers",        emoji: "🗺️", cat: "Adventure",  featured: false },
+  { name: "Breaking the Bank",     folder: "breakingthebank",        emoji: "🏦", cat: "Action",     featured: false },
+  { name: "Breaklock",             folder: "breaklock",              emoji: "🔒", cat: "Puzzle",     featured: false },
+  { name: "Breakout",              folder: "breakout",               emoji: "🧱", cat: "Classic",    featured: false },
+  { name: "BTD 4",                 folder: "btd4",                   emoji: "🎈", cat: "Tower Def",  featured: false },
+  { name: "Burning Man 2",         folder: "burning-man-2",          emoji: "🔥", cat: "Action",     featured: false },
+  { name: "Cannon Basketball 4",   folder: "cannon-basketball-4",    emoji: "🏀", cat: "Physics",    featured: false },
+  { name: "Canyon Defense",        folder: "canyondefense",          emoji: "🏜️", cat: "Tower Def",  featured: false },
+  { name: "Captain Callisto",      folder: "captaincallisto",        emoji: "👨‍🚀", cat: "Adventure",  featured: false },
+  { name: "Cars Simulator",        folder: "cars-simulator",         emoji: "🚗", cat: "Racing",     featured: false },
+  { name: "Cell Machine",          folder: "cell-machine",           emoji: "🧬", cat: "Puzzle",     featured: false },
+  { name: "Champion Archer",       folder: "championarcher",         emoji: "🏹", cat: "Sports",     featured: false },
+  { name: "Chess",                 folder: "chess",                  emoji: "♟️", cat: "Board",      featured: true  },
+  { name: "Chrome Dino",           folder: "chromedino",             emoji: "🦕", cat: "Arcade",     featured: true  },
+  { name: "Cluster Rush",          folder: "cluster-rush",           emoji: "🚛", cat: "Arcade",     featured: true  },
+  { name: "Cookie Clicker",        folder: "cookieclicker",          emoji: "🍪", cat: "Idle",       featured: true  },
+  { name: "Core Ball",             folder: "core-ball",              emoji: "⚽", cat: "Arcade",     featured: false },
+  { name: "Craftmine",             folder: "craftmine",              emoji: "⛏️", cat: "Sandbox",    featured: false },
+  { name: "Crossy Road",           folder: "crossyroad",             emoji: "🐔", cat: "Arcade",     featured: true  },
+  { name: "Crowd City 2",          folder: "crowd city 2",           emoji: "👥", cat: "IO",         featured: false },
+  { name: "CS:GO Clicker",         folder: "csgo-clicker",           emoji: "🔫", cat: "Idle",       featured: false },
+  { name: "CTR",                   folder: "ctr",                    emoji: "🏎️", cat: "Racing",     featured: false },
+  { name: "Cubefield",             folder: "cubefield",              emoji: "🟦", cat: "Arcade",     featured: false },
+  { name: "Cut the Rope",          folder: "cuttherope",             emoji: "🍬", cat: "Puzzle",     featured: false },
+  { name: "Cut the Rope 2",        folder: "cuttherope2",            emoji: "🍭", cat: "Puzzle",     featured: false },
+  { name: "Dadish",                folder: "dadish",                 emoji: "🌱", cat: "Platformer", featured: true  },
+  { name: "Dadish 2",              folder: "dadishtwo",              emoji: "🌿", cat: "Platformer", featured: false },
+  { name: "Dadish 3",              folder: "dadish3",                emoji: "🌳", cat: "Platformer", featured: false },
+  { name: "Doge Miner",            folder: "DogeMiner",              emoji: "🐕", cat: "Idle",       featured: false },
+  { name: "Drift Boss",            folder: "drift-boss",             emoji: "🚗", cat: "Racing",     featured: true  },
+  { name: "FullScreen Mario",      folder: "FullScreenMario/Source", emoji: "🍄", cat: "Platformer", featured: false },
+  { name: "HexGL",                 folder: "HexGL",                  emoji: "🏎️", cat: "Racing",     featured: true  },
+  { name: "Offline Paradise",      folder: "OfflineParadise",        emoji: "🏝️", cat: "Idle",       featured: false },
+  { name: "Slope",                 folder: "slope",                  emoji: "🟢", cat: "Arcade",     featured: true  },
+  { name: "Squid Gun Fest",        folder: "Squid Gun Fest",         emoji: "🦑", cat: "Shooter",    featured: false },
+  { name: "Stickman Survival",     folder: "Stickman-Survival",      emoji: "🧍", cat: "Survival",   featured: false },
 ];
 
 // ── Save/load helpers (localStorage) ──
@@ -288,28 +290,62 @@ function updateFavBtn() {
   btn.style.color = isFav(currentFolder) ? '#fff' : '';
 }
 
+// ── Icon probing ──
+const ICON_NAMES = ["icon", "logo", "background", "splash", "media"];
+const ICON_EXTS  = ["png", "jpg", "jpeg", "gif", "webp"];
+
+// Build a flat list of candidates: icon.png, icon.jpg, logo.png, logo.jpg, ...
+function getCandidates(folder) {
+  const list = [];
+  for (const name of ICON_NAMES)
+    for (const ext of ICON_EXTS)
+      list.push(`${folder}/${name}.${ext}`);
+  return list;
+}
+
+// Try each candidate in order, resolve with the first URL that loads, or null
+function probeIcon(folder) {
+  const candidates = getCandidates(folder);
+  let i = 0;
+  return new Promise(resolve => {
+    function tryNext() {
+      if (i >= candidates.length) { resolve(null); return; }
+      const img = new Image();
+      img.onload  = () => resolve(candidates[i]);
+      img.onerror = () => { i++; tryNext(); };
+      img.src = candidates[i];
+    }
+    tryNext();
+  });
+}
+
 // ── Card builder ──
 function makeCard(g) {
   const d = document.createElement('div');
   d.className = 'card';
   const favIcon = isFav(g.folder) ? '★' : '☆';
-  const thumbContent = g.icon
-    ? `<img src="${g.folder}/${g.icon}" alt="${g.name}" onerror="this.style.display='none'">`
-    : '';
   d.innerHTML = `
-    <button class="card-fav" title="Save game">${favIcon}</button>
+    <button class="card-fav" title="Favorite">${favIcon}</button>
     <div class="card-thumb">
-      ${thumbContent}
       <span class="emoji">${g.emoji}</span>
     </div>
     <div class="card-info">
       <div class="card-name">${g.name}</div>
       <div class="card-cat">${g.cat}</div>
     </div>`;
-  if (g.icon) {
-    const img = d.querySelector('img');
-    img.onload = () => d.querySelector('.emoji').style.display = 'none';
-  }
+
+  const thumb = d.querySelector('.card-thumb');
+  const emojiEl = d.querySelector('.emoji');
+
+  probeIcon(g.folder).then(url => {
+    if (!url) return;
+    const img = document.createElement('img');
+    img.src = url;
+    img.alt = g.name;
+    thumb.insertBefore(img, emojiEl);
+    emojiEl.style.display = 'none';
+  });
+
   d.querySelector('.card-fav').onclick = (e) => {
     e.stopPropagation();
     toggleFav(g.folder);

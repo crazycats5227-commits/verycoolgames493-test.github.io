@@ -10,27 +10,15 @@
   body { font-family: 'Comfortaa', cursive; background: #0d0015; color: #eee; min-height: 100vh; }
 
   nav {
-    background: #160025;
-    padding: 14px 28px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border-bottom: 2px solid #6a00cc;
-    position: sticky;
-    top: 0;
-    z-index: 10;
+    background: #160025; padding: 14px 28px;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 2px solid #6a00cc; position: sticky; top: 0; z-index: 10;
   }
   .logo { font-size: 1.1rem; font-weight: 700; color: #bf4dff; margin-right: auto; cursor: pointer; }
   .tab {
-    background: none;
-    border: 1px solid #6a00cc;
-    color: #cc99ff;
-    font-family: 'Comfortaa', cursive;
-    font-size: 0.82rem;
-    padding: 7px 16px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.2s;
+    background: none; border: 1px solid #6a00cc; color: #cc99ff;
+    font-family: 'Comfortaa', cursive; font-size: 0.82rem;
+    padding: 7px 16px; border-radius: 20px; cursor: pointer; transition: all 0.2s;
   }
   .tab:hover, .tab.active { background: #6a00cc; color: #fff; }
 
@@ -39,9 +27,8 @@
   h2 { font-size: 1rem; color: #bf4dff; letter-spacing: 0.08em; margin-bottom: 20px; text-transform: uppercase; }
 
   #search {
-    width: 100%; max-width: 400px;
-    background: #1e0030; border: 1px solid #6a00cc; border-radius: 20px;
-    padding: 10px 18px; color: #fff; font-family: 'Comfortaa', cursive;
+    width: 100%; max-width: 400px; background: #1e0030; border: 1px solid #6a00cc;
+    border-radius: 20px; padding: 10px 18px; color: #fff; font-family: 'Comfortaa', cursive;
     font-size: 0.88rem; outline: none; display: block; margin-bottom: 24px;
   }
   #search::placeholder { color: #8844aa; }
@@ -52,15 +39,36 @@
   .card {
     background: #1a0030; border: 1px solid #3d0077; border-radius: 12px;
     overflow: hidden; cursor: pointer; transition: transform 0.2s, border-color 0.2s;
+    position: relative;
   }
   .card:hover { transform: translateY(-4px); border-color: #bf4dff; }
+  .card-fav {
+    position: absolute; top: 6px; right: 6px; z-index: 2;
+    background: #0d001599; border: none; font-size: 1rem; cursor: pointer;
+    border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+    transition: transform 0.15s;
+  }
+  .card-fav:hover { transform: scale(1.2); }
+
   .card-thumb {
     width: 100%; aspect-ratio: 16/9; background: #2a0050;
-    display: flex; align-items: center; justify-content: center; font-size: 2.2rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.2rem; overflow: hidden; position: relative;
   }
+  .card-thumb img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+  .card-thumb .emoji { position: relative; z-index: 1; }
   .card-info { padding: 10px 12px 12px; }
   .card-name { font-size: 0.82rem; font-weight: 700; color: #ddb0ff; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .card-cat { font-size: 0.68rem; color: #8855bb; }
+
+  /* Recent bar */
+  .recent-label { font-size: 0.7rem; color: #8844aa; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
+  .recent-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+  .recent-chip {
+    background: #1e0030; border: 1px solid #6a00cc; border-radius: 20px;
+    padding: 5px 14px; font-size: 0.75rem; color: #cc99ff; cursor: pointer; transition: all 0.2s;
+  }
+  .recent-chip:hover { background: #6a00cc; color: #fff; }
 
   /* Frame */
   #frame-wrap { display: none; flex-direction: column; height: calc(100vh - 58px); }
@@ -70,13 +78,19 @@
     display: flex; align-items: center; gap: 12px;
     border-bottom: 1px solid #3d0077; flex-shrink: 0;
   }
-  .frame-bar span { font-size: 0.85rem; color: #bf4dff; font-weight: 700; }
+  .frame-bar span { font-size: 0.85rem; color: #bf4dff; font-weight: 700; flex: 1; }
   .back-btn {
     background: #3d0077; border: none; color: #eee;
     font-family: 'Comfortaa', cursive; font-size: 0.78rem;
     padding: 6px 14px; border-radius: 20px; cursor: pointer;
   }
   .back-btn:hover { background: #6a00cc; }
+  .fav-btn {
+    background: none; border: 1px solid #6a00cc; color: #cc99ff;
+    font-family: 'Comfortaa', cursive; font-size: 0.78rem;
+    padding: 6px 14px; border-radius: 20px; cursor: pointer; transition: all 0.2s;
+  }
+  .fav-btn:hover { background: #6a00cc; color: #fff; }
   #game-frame { flex: 1; border: none; width: 100%; }
 
   /* News */
@@ -87,26 +101,35 @@
   .news-date { font-size: 0.7rem; color: #8844aa; margin-bottom: 4px; }
   .news-title { font-size: 0.92rem; font-weight: 700; color: #ddb0ff; margin-bottom: 6px; }
   .news-body { font-size: 0.8rem; color: #aa88cc; line-height: 1.6; }
+
+  /* Favs empty state */
+  .empty { color: #8844aa; font-size: 0.85rem; padding: 20px 0; }
 </style>
 </head>
 <body>
 
 <nav>
-  <div class="logo" onclick="showPage('home')">verycoolgames493</div>
-  <button class="tab active" id="tab-home" onclick="showPage('home')">Home</button>
-  <button class="tab" id="tab-games" onclick="showPage('games')">Games</button>
-  <button class="tab" id="tab-news" onclick="showPage('news')">News</button>
+  <div class="logo" onclick="navigate('home')">verycoolgames493</div>
+  <button class="tab active" id="tab-home" onclick="navigate('home')">Home</button>
+  <button class="tab" id="tab-games" onclick="navigate('games')">Games</button>
+  <button class="tab" id="tab-favs" onclick="navigate('favs')">Favorites</button>
+  <button class="tab" id="tab-news" onclick="navigate('news')">News</button>
 </nav>
 
 <div id="frame-wrap">
   <div class="frame-bar">
     <button class="back-btn" onclick="closeGame()">← Back</button>
     <span id="frame-title"></span>
+    <button class="fav-btn" id="fav-btn" onclick="toggleFavCurrent()">⭐ Save</button>
   </div>
   <iframe id="game-frame" allowfullscreen sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups"></iframe>
 </div>
 
 <div class="page active" id="page-home">
+  <div id="recent-wrap" style="display:none">
+    <div class="recent-label">Recently Played</div>
+    <div class="recent-chips" id="recent-chips"></div>
+  </div>
   <h2>🎮 Featured Games</h2>
   <div class="grid" id="featured-grid"></div>
 </div>
@@ -116,12 +139,18 @@
   <div class="grid" id="all-grid"></div>
 </div>
 
+<div class="page" id="page-favs">
+  <h2>Favorites</h2>
+  <div class="grid" id="favs-grid"></div>
+  <div class="empty" id="favs-empty" style="display:none">No favorites yet. Hit ⭐ on any game to add it!</div>
+</div>
+
 <div class="page" id="page-news">
   <h2>📢 News</h2>
   <div class="news-item">
     <div class="news-date">March 8, 2026</div>
-    <div class="news-title">Tons of games added!</div>
-    <div class="news-body">We now have 40+ games loaded directly — no redirects, no other sites. Just click and play.</div>
+    <div class="news-title">100+ games added!</div>
+    <div class="news-body">Massive update — over 100 games hosted directly. No redirects, just click and play. Plus: save your favourites and see recently played!</div>
   </div>
   <div class="news-item">
     <div class="news-date">February 20, 2026</div>
@@ -136,62 +165,165 @@
 </div>
 
 <script>
-// Base URL pointing to the GitHub Pages deployment of the repo
-const BASE = "";
+const SITE = "https://394gamescoolvery.netlify.app";
 
 const games = [
-  { name: "1v1.LOL",            folder: "1v1lol",                  icon: "🔫", cat: "Battle",    featured: true  },
-  { name: "2048",                folder: "2048",                    icon: "🔢", cat: "Puzzle",    featured: true  },
-  { name: "Cookie Clicker",      folder: "cookieclicker",           icon: "🍪", cat: "Idle",      featured: true  },
-  { name: "Chrome Dino",         folder: "chromedino",              icon: "🦕", cat: "Arcade",    featured: true  },
-  { name: "Slope",               folder: "slope",                   icon: "🟢", cat: "Arcade",    featured: true  },
-  { name: "Among Us",            folder: "among-us",                icon: "🚀", cat: "Strategy",  featured: true  },
-  { name: "Angry Birds",         folder: "angry-birds",             icon: "🐦", cat: "Physics",   featured: false },
-  { name: "Asteroids",           folder: "asteroids",               icon: "☄️", cat: "Arcade",    featured: false },
-  { name: "Bad Ice Cream",       folder: "bad-ice-cream",           icon: "🍦", cat: "Action",    featured: false },
-  { name: "Bad Ice Cream 2",     folder: "bad-ice-cream-2",         icon: "🍧", cat: "Action",    featured: false },
-  { name: "Bad Ice Cream 3",     folder: "bad-ice-cream-3",         icon: "🍨", cat: "Action",    featured: false },
-  { name: "Baldi's Basics",      folder: "baldis-basics",           icon: "📏", cat: "Horror",    featured: false },
-  { name: "Basketball Stars",    folder: "basketball-stars",        icon: "🏀", cat: "Sports",    featured: false },
-  { name: "Binding of Isaac",    folder: "binding-of-isaac",        icon: "👁️", cat: "Roguelite", featured: false },
-  { name: "BitLife",             folder: "bitlife",                 icon: "👤", cat: "Sim",       featured: false },
-  { name: "Bloons TD",           folder: "bloonstd",                icon: "🎈", cat: "Tower Def", featured: false },
-  { name: "Bloons TD 2",         folder: "bloonstd2",               icon: "🎈", cat: "Tower Def", featured: false },
-  { name: "Boxel Rebound",       folder: "boxel-rebound",           icon: "📦", cat: "Platformer",featured: false },
-  { name: "Breakout",            folder: "breakout",                icon: "🧱", cat: "Classic",   featured: false },
-  { name: "Chess",               folder: "chess",                   icon: "♟️", cat: "Board",     featured: false },
-  { name: "Cluster Rush",        folder: "cluster-rush",            icon: "🚛", cat: "Arcade",    featured: false },
-  { name: "Crossy Road",         folder: "crossyroad",              icon: "🐔", cat: "Arcade",    featured: false },
-  { name: "Cut the Rope",        folder: "cuttherope",              icon: "🍬", cat: "Puzzle",    featured: false },
-  { name: "Cut the Rope 2",      folder: "cuttherope2",             icon: "🍭", cat: "Puzzle",    featured: false },
-  { name: "Dadish",              folder: "dadish",                  icon: "🌱", cat: "Platformer",featured: false },
-  { name: "Doge Miner",          folder: "DogeMiner",               icon: "🐕", cat: "Idle",      featured: false },
-  { name: "FullScreen Mario",    folder: "FullScreenMario/Source",  icon: "🍄", cat: "Platformer",featured: false },
-  { name: "HexGL",               folder: "HexGL",                   icon: "🏎️", cat: "Racing",    featured: false },
-  { name: "Moto X3M",            folder: "moto-x3m",                icon: "🏍️", cat: "Racing",    featured: false },
-  { name: "Run 3",               folder: "run3",                    icon: "🏃", cat: "Runner",    featured: false },
-  { name: "Squid Gun Fest",      folder: "Squid Gun Fest",          icon: "🦑", cat: "Shooter",   featured: false },
-  { name: "Stickman Survival",   folder: "Stickman-Survival",       icon: "🧍", cat: "Survival",  featured: false },
-  { name: "Awesome Tanks 2",     folder: "awesome-tanks-2",         icon: "🪖", cat: "Shooter",   featured: false },
-  { name: "Age of War",          folder: "age-of-war",              icon: "⚔️", cat: "Strategy",  featured: false },
-  { name: "Drift Boss",          folder: "drift-boss",              icon: "🚗", cat: "Racing",    featured: false },
-  { name: "A Dark Room",         folder: "adarkroom",               icon: "🕯️", cat: "RPG",       featured: false },
-  { name: "Backrooms",           folder: "backrooms",               icon: "🏚️", cat: "Horror",    featured: false },
-  { name: "Craftmine",           folder: "craftmine",               icon: "⛏️", cat: "Sandbox",   featured: false },
-  { name: "Cubefield",           folder: "cubefield",               icon: "🟦", cat: "Arcade",    featured: false },
-  { name: "Alien Hominid",       folder: "alienhominid",            icon: "👽", cat: "Action",    featured: false },
+  { name: "1v1.LOL",               folder: "1v1lol",                 icon: "icon.png",  emoji: "🔫", cat: "Battle",     featured: true  },
+  { name: "1v1 Space",             folder: "1v1space",               icon: null,        emoji: "🚀", cat: "Battle",     featured: false },
+  { name: "2020 Game",             folder: "2020-game",              icon: null,        emoji: "🗓️", cat: "Puzzle",     featured: false },
+  { name: "2048",                  folder: "2048",                   icon: "icon.png",  emoji: "🔢", cat: "Puzzle",     featured: true  },
+  { name: "2048 Multitask",        folder: "2048-multitask",         icon: null,        emoji: "🔢", cat: "Puzzle",     featured: false },
+  { name: "8 Ball Billiards",      folder: "8ball-billards-classic", icon: "icon.png",  emoji: "🎱", cat: "Sports",     featured: false },
+  { name: "9007199254740992",      folder: "9007199254740992",       icon: null,        emoji: "♾️", cat: "Puzzle",     featured: false },
+  { name: "10 Min Till Dawn",      folder: "10-minutes-till-dawn",   icon: "icon.png",  emoji: "🌙", cat: "Shooter",    featured: false },
+  { name: "100ng",                 folder: "100ng",                  icon: null,        emoji: "💯", cat: "Arcade",     featured: false },
+  { name: "A Dark Room",           folder: "adarkroom",              icon: null,        emoji: "🕯️", cat: "RPG",        featured: false },
+  { name: "Achievement Unlocked",  folder: "achievementunlocked",    icon: "icon.png",  emoji: "🏆", cat: "Arcade",     featured: false },
+  { name: "Adrenaline Challenge",  folder: "adrenalinechallenge",    icon: null,        emoji: "⚡", cat: "Racing",     featured: false },
+  { name: "Age of War",            folder: "age-of-war",             icon: "icon.png",  emoji: "⚔️", cat: "Strategy",   featured: false },
+  { name: "Alien Hominid",         folder: "alienhominid",           icon: "icon.png",  emoji: "👽", cat: "Action",     featured: false },
+  { name: "Alien Invaders IO",     folder: "alien-invaders-io",      icon: null,        emoji: "🛸", cat: "Shooter",    featured: false },
+  { name: "Align 4",               folder: "align-4",                icon: null,        emoji: "🟡", cat: "Board",      featured: false },
+  { name: "Among Us",              folder: "among-us",               icon: "icon.png",  emoji: "🚀", cat: "Strategy",   featured: true  },
+  { name: "Angry Birds",           folder: "angry-birds",            icon: "icon.png",  emoji: "🐦", cat: "Physics",    featured: false },
+  { name: "Anti Terrorist Rush",   folder: "anti-terrorist-rush",    icon: "icon.png",  emoji: "💣", cat: "Shooter",    featured: false },
+  { name: "Arcade Wizard",         folder: "arcade-wizard",          icon: null,        emoji: "🧙", cat: "Arcade",     featured: false },
+  { name: "ASCII Space",           folder: "asciispace",             icon: null,        emoji: "🌌", cat: "Shooter",    featured: false },
+  { name: "Aspiring Artist",       folder: "aspiring-artist",        icon: null,        emoji: "🎨", cat: "Casual",     featured: false },
+  { name: "Asteroids",             folder: "asteroids",              icon: null,        emoji: "☄️", cat: "Arcade",     featured: false },
+  { name: "Astray",                folder: "astray",                 icon: "icon.png",  emoji: "🌀", cat: "Puzzle",     featured: false },
+  { name: "Avalanche",             folder: "avalanche",              icon: null,        emoji: "🏔️", cat: "Arcade",     featured: false },
+  { name: "Awesome Tanks 2",       folder: "awesome-tanks-2",        icon: "icon.png",  emoji: "🪖", cat: "Shooter",    featured: false },
+  { name: "Backcountry",           folder: "backcountry",            icon: null,        emoji: "🏕️", cat: "Adventure",  featured: false },
+  { name: "Backflip Dive 3D",      folder: "backflip-dive-3d",       icon: "icon.png",  emoji: "🤸", cat: "Sports",     featured: false },
+  { name: "Backrooms",             folder: "backrooms",              icon: null,        emoji: "🏚️", cat: "Horror",     featured: false },
+  { name: "Bad Ice Cream",         folder: "bad-ice-cream",          icon: "icon.png",  emoji: "🍦", cat: "Action",     featured: false },
+  { name: "Bad Ice Cream 2",       folder: "bad-ice-cream-2",        icon: "icon.png",  emoji: "🍧", cat: "Action",     featured: false },
+  { name: "Bad Ice Cream 3",       folder: "bad-ice-cream-3",        icon: "icon.png",  emoji: "🍨", cat: "Action",     featured: false },
+  { name: "Baldi's Basics",        folder: "baldis-basics",          icon: "icon.png",  emoji: "📏", cat: "Horror",     featured: false },
+  { name: "Basket Bros IO",        folder: "basket-bros-io",         icon: "icon.png",  emoji: "🏀", cat: "Sports",     featured: false },
+  { name: "Basketball IO",         folder: "basketball-io",          icon: null,        emoji: "🏀", cat: "Sports",     featured: false },
+  { name: "Basketball Legends",    folder: "basketball-legends-2020",icon: "icon.png",  emoji: "🏀", cat: "Sports",     featured: false },
+  { name: "Basketball Stars",      folder: "basketball-stars",       icon: "icon.png",  emoji: "⭐", cat: "Sports",     featured: false },
+  { name: "Battle for Gondor",     folder: "battleforgondor",        icon: null,        emoji: "🏰", cat: "Strategy",   featured: false },
+  { name: "Big Red Button",        folder: "bigredbutton",           icon: null,        emoji: "🔴", cat: "Casual",     featured: false },
+  { name: "Binding of Isaac",      folder: "binding-of-isaac",       icon: "icon.png",  emoji: "👁️", cat: "Roguelite",  featured: false },
+  { name: "BitLife",               folder: "bitlife",                icon: "icon.png",  emoji: "👤", cat: "Sim",        featured: false },
+  { name: "Black Hole Square",     folder: "blackholesquare",        icon: null,        emoji: "⬛", cat: "Puzzle",     featured: false },
+  { name: "Black Knight",          folder: "blackknight",            icon: null,        emoji: "🗡️", cat: "Action",     featured: false },
+  { name: "Blocky Snakes",         folder: "blocky-snakes",          icon: "icon.png",  emoji: "🐍", cat: "Arcade",     featured: false },
+  { name: "Bloons TD",             folder: "bloonstd",               icon: "icon.png",  emoji: "🎈", cat: "Tower Def",  featured: true  },
+  { name: "Bloons TD 2",           folder: "bloonstd2",              icon: "icon.png",  emoji: "🎈", cat: "Tower Def",  featured: false },
+  { name: "Bloxors",               folder: "bloxors",                icon: null,        emoji: "📦", cat: "Puzzle",     featured: false },
+  { name: "Bounceback",            folder: "bounceback",             icon: null,        emoji: "🏓", cat: "Arcade",     featured: false },
+  { name: "Boxel Rebound",         folder: "boxel-rebound",          icon: "icon.png",  emoji: "📦", cat: "Platformer", featured: false },
+  { name: "Boxhead 2 Play",        folder: "boxhead2play",           icon: "icon.png",  emoji: "🧟", cat: "Shooter",    featured: false },
+  { name: "Brave Explorers",       folder: "brave-explorers",        icon: null,        emoji: "🗺️", cat: "Adventure",  featured: false },
+  { name: "Breaking the Bank",     folder: "breakingthebank",        icon: null,        emoji: "🏦", cat: "Action",     featured: false },
+  { name: "Breaklock",             folder: "breaklock",              icon: null,        emoji: "🔒", cat: "Puzzle",     featured: false },
+  { name: "Breakout",              folder: "breakout",               icon: null,        emoji: "🧱", cat: "Classic",    featured: false },
+  { name: "BTD 4",                 folder: "btd4",                   icon: "icon.png",  emoji: "🎈", cat: "Tower Def",  featured: false },
+  { name: "Burning Man 2",         folder: "burning-man-2",          icon: null,        emoji: "🔥", cat: "Action",     featured: false },
+  { name: "Cannon Basketball 4",   folder: "cannon-basketball-4",    icon: "icon.png",  emoji: "🏀", cat: "Physics",    featured: false },
+  { name: "Canyon Defense",        folder: "canyondefense",          icon: null,        emoji: "🏜️", cat: "Tower Def",  featured: false },
+  { name: "Captain Callisto",      folder: "captaincallisto",        icon: null,        emoji: "👨‍🚀", cat: "Adventure",  featured: false },
+  { name: "Cars Simulator",        folder: "cars-simulator",         icon: "icon.png",  emoji: "🚗", cat: "Racing",     featured: false },
+  { name: "Cell Machine",          folder: "cell-machine",           icon: "icon.png",  emoji: "🧬", cat: "Puzzle",     featured: false },
+  { name: "Champion Archer",       folder: "championarcher",         icon: null,        emoji: "🏹", cat: "Sports",     featured: false },
+  { name: "Chess",                 folder: "chess",                  icon: "icon.png",  emoji: "♟️", cat: "Board",      featured: false },
+  { name: "Chrome Dino",           folder: "chromedino",             icon: "icon.png",  emoji: "🦕", cat: "Arcade",     featured: true  },
+  { name: "Cluster Rush",          folder: "cluster-rush",           icon: "icon.png",  emoji: "🚛", cat: "Arcade",     featured: true  },
+  { name: "Cookie Clicker",        folder: "cookieclicker",          icon: "icon.png",  emoji: "🍪", cat: "Idle",       featured: true  },
+  { name: "Core Ball",             folder: "core-ball",              icon: "icon.png",  emoji: "⚽", cat: "Arcade",     featured: false },
+  { name: "Craftmine",             folder: "craftmine",              icon: "icon.png",  emoji: "⛏️", cat: "Sandbox",    featured: false },
+  { name: "Crossy Road",           folder: "crossyroad",             icon: "icon.png",  emoji: "🐔", cat: "Arcade",     featured: false },
+  { name: "Crowd City 2",          folder: "crowd city 2",           icon: "icon.png",  emoji: "👥", cat: "IO",         featured: false },
+  { name: "CS:GO Clicker",         folder: "csgo-clicker",           icon: "icon.png",  emoji: "🔫", cat: "Idle",       featured: false },
+  { name: "CTR",                   folder: "ctr",                    icon: "icon.png",  emoji: "🏎️", cat: "Racing",     featured: false },
+  { name: "Cubefield",             folder: "cubefield",              icon: null,        emoji: "🟦", cat: "Arcade",     featured: false },
+  { name: "Cut the Rope",          folder: "cuttherope",             icon: "icon.png",  emoji: "🍬", cat: "Puzzle",     featured: false },
+  { name: "Cut the Rope 2",        folder: "cuttherope2",            icon: "icon.png",  emoji: "🍭", cat: "Puzzle",     featured: false },
+  { name: "Dadish",                folder: "dadish",                 icon: "icon.png",  emoji: "🌱", cat: "Platformer", featured: false },
+  { name: "Dadish 2",              folder: "dadishtwo",              icon: "icon.png",  emoji: "🌿", cat: "Platformer", featured: false },
+  { name: "Dadish 3",              folder: "dadish3",                icon: "icon.png",  emoji: "🌳", cat: "Platformer", featured: false },
+  { name: "Doge Miner",            folder: "DogeMiner",              icon: "icon.png",  emoji: "🐕", cat: "Idle",       featured: false },
+  { name: "Drift Boss",            folder: "drift-boss",             icon: "icon.png",  emoji: "🚗", cat: "Racing",     featured: false },
+  { name: "FullScreen Mario",      folder: "FullScreenMario/Source", icon: null,        emoji: "🍄", cat: "Platformer", featured: false },
+  { name: "HexGL",                 folder: "HexGL",                  icon: "icon.png",  emoji: "🏎️", cat: "Racing",     featured: false },
+  { name: "Offline Paradise",      folder: "OfflineParadise",        icon: null,        emoji: "🏝️", cat: "Idle",       featured: false },
+  { name: "Slope",                 folder: "slope",                  icon: "icon.png",  emoji: "🟢", cat: "Arcade",     featured: true  },
+  { name: "Squid Gun Fest",        folder: "Squid Gun Fest",         icon: "icon.png",  emoji: "🦑", cat: "Shooter",    featured: false },
+  { name: "Stickman Survival",     folder: "Stickman-Survival",      icon: "icon.png",  emoji: "🧍", cat: "Survival",   featured: false },
 ];
 
+// ── Save/load helpers (localStorage) ──
+function getFavs() { try { return JSON.parse(localStorage.getItem('vcg_favs') || '[]'); } catch { return []; } }
+function saveFavs(f) { localStorage.setItem('vcg_favs', JSON.stringify(f)); }
+function isFav(folder) { return getFavs().includes(folder); }
+function toggleFav(folder) {
+  let f = getFavs();
+  f.includes(folder) ? f = f.filter(x => x !== folder) : f.push(folder);
+  saveFavs(f);
+}
+
+function getRecent() { try { return JSON.parse(localStorage.getItem('vcg_recent') || '[]'); } catch { return []; } }
+function addRecent(folder) {
+  let r = getRecent().filter(x => x !== folder);
+  r.unshift(folder);
+  localStorage.setItem('vcg_recent', JSON.stringify(r.slice(0, 8)));
+}
+
+// ── Current game state ──
+let currentFolder = null;
+
+function toggleFavCurrent() {
+  if (!currentFolder) return;
+  toggleFav(currentFolder);
+  updateFavBtn();
+}
+function updateFavBtn() {
+  const btn = document.getElementById('fav-btn');
+  btn.textContent = isFav(currentFolder) ? '★ Favorited' : '⭐ Favorite';
+  btn.style.background = isFav(currentFolder) ? '#6a00cc' : '';
+  btn.style.color = isFav(currentFolder) ? '#fff' : '';
+}
+
+// ── Card builder ──
 function makeCard(g) {
   const d = document.createElement('div');
   d.className = 'card';
-  d.innerHTML = `<div class="card-thumb">${g.icon}</div><div class="card-info"><div class="card-name">${g.name}</div><div class="card-cat">${g.cat}</div></div>`;
+  const favIcon = isFav(g.folder) ? '★' : '☆';
+  const thumbContent = g.icon
+    ? `<img src="${g.folder}/${g.icon}" alt="${g.name}" onerror="this.style.display='none'">`
+    : '';
+  d.innerHTML = `
+    <button class="card-fav" title="Save game">${favIcon}</button>
+    <div class="card-thumb">
+      ${thumbContent}
+      <span class="emoji">${g.emoji}</span>
+    </div>
+    <div class="card-info">
+      <div class="card-name">${g.name}</div>
+      <div class="card-cat">${g.cat}</div>
+    </div>`;
+  if (g.icon) {
+    const img = d.querySelector('img');
+    img.onload = () => d.querySelector('.emoji').style.display = 'none';
+  }
+  d.querySelector('.card-fav').onclick = (e) => {
+    e.stopPropagation();
+    toggleFav(g.folder);
+    e.currentTarget.textContent = isFav(g.folder) ? '★' : '☆';
+    renderFavs();
+  };
   d.onclick = () => launchGame(g);
   return d;
 }
 
+// ── Render functions ──
 function renderFeatured() {
   const grid = document.getElementById('featured-grid');
+  grid.innerHTML = '';
   games.filter(g => g.featured).forEach(g => grid.appendChild(makeCard(g)));
 }
 
@@ -203,16 +335,54 @@ function renderAll() {
        .forEach(g => grid.appendChild(makeCard(g)));
 }
 
+function renderFavs() {
+  const favs = getFavs();
+  const grid = document.getElementById('favs-grid');
+  const empty = document.getElementById('favs-empty');
+  grid.innerHTML = '';
+  const favGames = games.filter(g => favs.includes(g.folder));
+  favGames.forEach(g => grid.appendChild(makeCard(g)));
+  empty.style.display = favGames.length ? 'none' : 'block';
+}
+
+function renderRecent() {
+  const recent = getRecent();
+  const wrap = document.getElementById('recent-wrap');
+  const chips = document.getElementById('recent-chips');
+  if (!recent.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  chips.innerHTML = '';
+  recent.forEach(folder => {
+    const g = games.find(x => x.folder === folder);
+    if (!g) return;
+    const chip = document.createElement('div');
+    chip.className = 'recent-chip';
+    chip.textContent = g.emoji + ' ' + g.name;
+    chip.onclick = () => launchGame(g);
+    chips.appendChild(chip);
+  });
+}
+
+// ── Game launch / URL routing ──
 function launchGame(g) {
+  currentFolder = g.folder;
   document.getElementById('frame-title').textContent = g.name;
-  document.getElementById('game-frame').src = `${BASE}/${g.folder}/index.html`;
+  document.getElementById('game-frame').src = `${g.folder}/index.html`;
   document.getElementById('frame-wrap').classList.add('active');
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  updateFavBtn();
+  addRecent(g.folder);
+  // Push URL without reloading
+  history.pushState({ game: g.folder }, g.name, `/${g.folder}`);
+  document.title = g.name + ' — verycoolgames493';
 }
 
 function closeGame() {
+  currentFolder = null;
   document.getElementById('frame-wrap').classList.remove('active');
   document.getElementById('game-frame').src = '';
+  history.pushState({}, 'verycoolgames493', '/');
+  document.title = 'verycoolgames493';
   showPage('home');
 }
 
@@ -222,10 +392,37 @@ function showPage(name) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'home') { renderFeatured(); renderRecent(); }
+  if (name === 'games') renderAll();
+  if (name === 'favs') renderFavs();
 }
 
-renderFeatured();
-renderAll();
+function navigate(name) {
+  history.pushState({ page: name }, '', name === 'home' ? '/' : '/' + name);
+  document.title = 'verycoolgames493';
+  showPage(name);
+}
+
+// Handle browser back/forward
+window.addEventListener('popstate', () => {
+  const path = location.pathname.replace(/^\//, '');
+  if (!path || path === 'home') { showPage('home'); return; }
+  if (['games','favs','news'].includes(path)) { showPage(path); return; }
+  // Try to load as a game
+  const g = games.find(x => x.folder === path);
+  if (g) launchGame(g);
+  else showPage('home');
+});
+
+// ── Boot: check URL on load ──
+(function boot() {
+  const path = location.pathname.replace(/^\//, '');
+  if (!path || path === 'home') { showPage('home'); return; }
+  if (['games','favs','news'].includes(path)) { showPage(path); return; }
+  const g = games.find(x => x.folder === path);
+  if (g) { launchGame(g); return; }
+  showPage('home');
+})();
 </script>
 </body>
 </html>
